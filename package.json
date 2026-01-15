@@ -1,7 +1,7 @@
 {
   "name": "homebridge-legrand-radiant",
   "displayName": "Legrand Radiant",
-  "version": "0.1.3",
+  "version": "0.1.5",
   "description": "Homebridge plugin for Legrand Radiant WiFi smart switches and dimmers",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
