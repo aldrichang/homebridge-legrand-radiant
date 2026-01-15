@@ -10,7 +10,7 @@ export interface LegrandCloudConfig {
   // Authentication
   email?: string;
   password?: string;
-  
+
   // Optional
   debug?: boolean;
 }
@@ -50,15 +50,15 @@ export interface Module {
 const API_CONSTANTS = {
   // Base API URL
   baseUrl: 'https://api.developer.legrand.com',
-  
+
   // Azure API Management subscription key (from app)
   subscriptionKey: '934c78d6eeb34879a9b66681f30b14fe',
-  
+
   // Azure B2C configuration
   b2cTenant: 'login.eliotbylegrand.com',
   b2cPolicy: 'B2C_1_ambientwifi_SignUpOrSignIn',
   clientId: 'd6f3606b-c2fe-4376-a6dd-dd929cbde18d',
-  
+
   // User agent to mimic the app
   userAgent: 'Ambient/3.0.2 (us.legrand.wiambientlighting; build:1; iOS 26.2.0) Alamofire/4.7.3',
 };
@@ -73,7 +73,7 @@ export interface DeviceState {
 
 /**
  * Legrand Cloud API Client
- * 
+ *
  * Communicates with the Legrand cloud API to control WiFi smart switches
  */
 export class LegrandCloudApi {
@@ -101,11 +101,11 @@ export class LegrandCloudApi {
 
     try {
       const response = await this.makeRequest('GET', url);
-      
+
       if (Array.isArray(response)) {
         return response as unknown as Plant[];
       }
-      
+
       return [];
     } catch (error) {
       this.log.error(`Failed to get plants: ${error}`);
@@ -123,11 +123,11 @@ export class LegrandCloudApi {
 
     try {
       const response = await this.makeRequest('GET', url);
-      
+
       if (Array.isArray(response)) {
         return response as unknown as Module[];
       }
-      
+
       return [];
     } catch (error) {
       this.log.error(`Failed to get modules: ${error}`);
@@ -145,7 +145,7 @@ export class LegrandCloudApi {
     for (const plant of plants) {
       this.log.info(`Found plant: ${plant.name} (${plant.id})`);
       const modules = await this.getModules(plant.id);
-      
+
       for (const module of modules) {
         this.log.info(`  Found device: ${module.name} (${module.deviceType}) - ${module.status}`);
         allModules.push(module);
@@ -161,13 +161,13 @@ export class LegrandCloudApi {
   async getDeviceStatus(plantId: string, deviceId: string): Promise<DeviceState | null> {
     const modules = await this.getModules(plantId);
     const device = modules.find(m => m.id === deviceId);
-    
+
     if (device) {
       return {
         on: device.status === 'on',
       };
     }
-    
+
     return null;
   }
 
@@ -178,7 +178,7 @@ export class LegrandCloudApi {
     await this.ensureAuthenticated();
 
     const correlationId = crypto.randomUUID();
-    
+
     const body = JSON.stringify({
       command: {
         state: state,
@@ -191,7 +191,7 @@ export class LegrandCloudApi {
 
     try {
       const response = await this.makeRequest('POST', url, body);
-      
+
       if (this.config.debug) {
         this.log.debug(`setState response: ${JSON.stringify(response)}`);
       }
@@ -212,7 +212,7 @@ export class LegrandCloudApi {
     const correlationId = crypto.randomUUID();
     const clampedLevel = Math.max(0, Math.min(100, Math.round(level)));
     const state = clampedLevel > 0 ? 'on' : 'off';
-    
+
     const body = JSON.stringify({
       command: {
         state: state,
@@ -226,7 +226,7 @@ export class LegrandCloudApi {
 
     try {
       const response = await this.makeRequest('POST', url, body);
-      
+
       if (this.config.debug) {
         this.log.debug(`setBrightness response: ${JSON.stringify(response)}`);
       }
@@ -263,7 +263,7 @@ export class LegrandCloudApi {
     await this.ensureAuthenticated();
 
     const correlationId = crypto.randomUUID();
-    
+
     const body = JSON.stringify({
       timeout: 10,
       command: {
@@ -275,7 +275,7 @@ export class LegrandCloudApi {
 
     try {
       const response = await this.makeRequest('POST', url, body);
-      
+
       if (this.config.debug) {
         this.log.debug(`getState response: ${JSON.stringify(response)}`);
       }
@@ -283,11 +283,11 @@ export class LegrandCloudApi {
       // Response format: { status: 200, payload: { state: "on", level: 75, ... } }
       if (response && typeof response === 'object') {
         const payload = response.payload as Record<string, unknown> | undefined;
-        
+
         if (payload) {
           const state = payload.state === 'on';
           const level = typeof payload.level === 'number' ? payload.level : undefined;
-          
+
           return {
             on: state,
             brightness: level,
@@ -334,11 +334,11 @@ export class LegrandCloudApi {
     if (this.auth) {
       return this.auth.getAccessToken();
     }
-    
+
     if (this.manualToken) {
       return this.manualToken;
     }
-    
+
     throw new Error('No access token available');
   }
 
@@ -348,12 +348,12 @@ export class LegrandCloudApi {
   setAccessToken(token: string, expiresIn: number = 3600): void {
     this.manualToken = token;
     this.manualTokenExpiry = Date.now() + (expiresIn * 1000);
-    
+
     // Also set on auth module if available
     if (this.auth) {
       this.auth.setTokens(token, undefined, expiresIn);
     }
-    
+
     this.log.info('Access token set manually');
   }
 
@@ -366,10 +366,10 @@ export class LegrandCloudApi {
     body?: string,
   ): Promise<Record<string, unknown>> {
     const token = await this.getAccessToken();
-    
+
     return new Promise((resolve, reject) => {
       const urlObj = new URL(url);
-      
+
       const headers: Record<string, string | number> = {
         'Content-Type': 'application/json',
         'Accept': '*/*',
@@ -398,7 +398,7 @@ export class LegrandCloudApi {
 
       const req = https.request(options, (res) => {
         let data = '';
-        
+
         res.on('data', (chunk) => {
           data += chunk;
         });
@@ -424,7 +424,7 @@ export class LegrandCloudApi {
       if (body) {
         req.write(body);
       }
-      
+
       req.end();
     });
   }

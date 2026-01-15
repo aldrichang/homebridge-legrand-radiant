@@ -4,7 +4,7 @@ import { LegrandCloudPlatform } from './cloudPlatform';
 
 /**
  * Register the platform with Homebridge
- * 
+ *
  * This plugin uses the Legrand Cloud API to control WiFi smart switches.
  */
 export = (api: API) => {

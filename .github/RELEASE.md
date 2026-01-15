@@ -1,25 +1,63 @@
 # Release Process
 
-This repository uses GitHub Actions to automate releases to npm.
+This repository uses GitHub Actions to automate releases to npm using **Trusted Publishers** (OIDC authentication).
 
 ## Prerequisites
 
-Before you can publish to npm, you need to set up an npm token:
+Before you can publish to npm, you need to configure npm Trusted Publishers:
 
-1. **Create an NPM Access Token:**
-   - Log in to [npmjs.com](https://www.npmjs.com)
-   - Go to your account settings → Access Tokens
-   - Click "Generate New Token" → "Classic Token"
-   - Select "Automation" type (for CI/CD)
-   - Copy the token
+### Setting up npm Account and Trusted Publishers
 
-2. **Add Token to GitHub Secrets:**
-   - Go to your GitHub repository
-   - Navigate to Settings → Secrets and variables → Actions
-   - Click "New repository secret"
-   - Name: `NPM_TOKEN`
-   - Value: Paste your npm token
-   - Click "Add secret"
+1. **Enable Two-Factor Authentication (Required):**
+   - Go to [npmjs.com](https://www.npmjs.com) and log in
+   - Click your profile → Account Settings
+   - Go to "Two-Factor Authentication" section
+   - Click "Enable 2FA"
+   - Choose "Authorization and Publishing" (recommended) or "Authorization Only"
+   - Follow the setup wizard with your authenticator app
+
+2. **Log in to npm:**
+   - Navigate to your package page (or create the package first if it doesn't exist)
+
+3. **Configure Trusted Publishers:**
+   - Go to your package settings
+   - Click on "Publishing" tab
+   - Scroll to "Trusted Publishers" section
+   - Click "Add Trusted Publisher"
+   
+4. **Add GitHub Actions as a publisher:**
+   - **Provider:** GitHub Actions
+   - **Organization/User:** Your GitHub username (e.g., `aldrichang`)
+   - **Repository:** `homebridge-legrand-radiant`
+   - **Workflow:** `release.yml`
+   - **Environment:** Leave blank (optional field)
+   - Click "Add"
+
+### First-time Package Publishing
+
+If this is your first time publishing the package, you'll need to do an initial manual publish:
+
+```bash
+# Make sure you're logged in to npm (will prompt for 2FA code)
+npm login
+
+# Build and publish the first version
+npm run build
+npm publish --access public --otp=123456  # Replace 123456 with your 2FA code
+
+# Then set up Trusted Publishers as described above
+```
+
+**Note:** After setting up Trusted Publishers, GitHub Actions will be able to publish without needing your 2FA code.
+
+After the initial publish, all future releases will be automated through GitHub Actions.
+
+### Benefits of Trusted Publishers
+
+- ✅ **No tokens to manage** - Uses OIDC for secure authentication
+- ✅ **More secure** - No long-lived credentials stored in GitHub
+- ✅ **Automatic provenance** - Cryptographically links packages to source code
+- ✅ **Simpler setup** - No secrets to rotate or manage
 
 ## How to Release
 
@@ -95,10 +133,12 @@ Every push and pull request runs:
 
 ## Troubleshooting
 
-### "npm ERR! 403 Forbidden"
-- Check that `NPM_TOKEN` secret is set correctly
-- Verify the token has "Automation" permissions
-- Ensure you have publish rights to the package
+### "npm ERR! 403 Forbidden" or "npm ERR! 401 Unauthorized"
+- Verify that Trusted Publishers is configured correctly on npm
+- Check that the GitHub repository name matches exactly
+- Ensure the workflow name is `release.yml`
+- Confirm you have publish rights to the package
+- Make sure the package exists on npm (do initial manual publish if needed)
 
 ### "Version already exists"
 - You're trying to publish a version that's already on npm

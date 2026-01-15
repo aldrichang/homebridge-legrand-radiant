@@ -9,14 +9,14 @@ const AUTH_CONFIG = {
   // Azure B2C tenant
   tenant: 'eliotclouduamprd.onmicrosoft.com',
   policy: 'B2C_1_ambientwifi_SignUpOrSignIn',
-  
+
   // OAuth endpoints - base URL
   baseUrl: 'https://login.eliotbylegrand.com',
   authorizeUrl: 'https://login.eliotbylegrand.com/eliotclouduamprd.onmicrosoft.com/b2c_1_ambientwifi_signuporsignin/oauth2/v2.0/authorize',
   tokenUrl: 'https://login.eliotbylegrand.com/eliotclouduamprd.onmicrosoft.com/b2c_1_ambientwifi_signuporsignin/oauth2/v2.0/token',
   selfAssertedUrl: 'https://login.eliotbylegrand.com/eliotclouduamprd.onmicrosoft.com/B2C_1_ambientwifi_SignUpOrSignIn/SelfAsserted',
   confirmedUrl: 'https://login.eliotbylegrand.com/eliotclouduamprd.onmicrosoft.com/B2C_1_ambientwifi_SignUpOrSignIn/api/CombinedSigninAndSignup/confirmed',
-  
+
   // Client configuration
   clientId: 'd6f3606b-c2fe-4376-a6dd-dd929cbde18d',
   redirectUri: 'msald6f3606b-c2fe-4376-a6dd-dd929cbde18d://auth',
@@ -35,7 +35,7 @@ export interface TokenResponse {
 
 /**
  * Legrand Authentication Handler
- * 
+ *
  * Handles OAuth2 authentication with Azure B2C for the Legrand Smart Lights app
  */
 export class LegrandAuth {
@@ -91,7 +91,7 @@ export class LegrandAuth {
 
   /**
    * Perform full OAuth authentication
-   * 
+   *
    * Azure B2C flow:
    * 1. Start authorize request to get session cookies and CSRF token
    * 2. Submit credentials to SelfAsserted endpoint
@@ -114,7 +114,7 @@ export class LegrandAuth {
 
       this.log.debug('Step 1: Starting authorization flow...');
       const { csrfToken, cookies, tx } = await this.startAuthorization(codeChallenge, state);
-      
+
       if (!csrfToken || !tx) {
         throw new Error('Failed to get CSRF token or transaction ID from login page');
       }
@@ -188,7 +188,7 @@ export class LegrandAuth {
 
     return new Promise((resolve, reject) => {
       const urlObj = new URL(url);
-      
+
       const req = https.request({
         hostname: urlObj.hostname,
         path: urlObj.pathname + urlObj.search,
@@ -200,7 +200,7 @@ export class LegrandAuth {
       }, (res) => {
         let data = '';
         const cookies: string[] = [];
-        
+
         // Collect cookies
         const setCookieHeaders = res.headers['set-cookie'];
         if (setCookieHeaders) {
@@ -255,7 +255,7 @@ export class LegrandAuth {
 
     return new Promise((resolve, reject) => {
       const urlObj = new URL(url);
-      
+
       const req = https.request({
         hostname: urlObj.hostname,
         path: urlObj.pathname + urlObj.search,
@@ -273,7 +273,7 @@ export class LegrandAuth {
         },
       }, (res) => {
         let data = '';
-        
+
         // Collect any new cookies
         const updatedCookies = [...cookies];
         const setCookieHeaders = res.headers['set-cookie'];
@@ -290,7 +290,7 @@ export class LegrandAuth {
             }
           }
         }
-        
+
         res.on('data', chunk => data += chunk);
         res.on('end', () => {
           if (res.statusCode === 200) {
@@ -325,7 +325,7 @@ export class LegrandAuth {
 
     return new Promise((resolve, reject) => {
       const urlObj = new URL(url);
-      
+
       const req = https.request({
         hostname: urlObj.hostname,
         path: urlObj.pathname + urlObj.search,
@@ -340,7 +340,7 @@ export class LegrandAuth {
         },
       }, (res) => {
         let data = '';
-        
+
         // Check for redirect with code
         const location = res.headers['location'];
         if (location) {
@@ -350,7 +350,7 @@ export class LegrandAuth {
             return;
           }
         }
-        
+
         res.on('data', chunk => data += chunk);
         res.on('end', () => {
           // Try to find code in response body
@@ -359,7 +359,7 @@ export class LegrandAuth {
             resolve(decodeURIComponent(codeMatch[1]));
             return;
           }
-          
+
           // Try to find redirect URL in response
           const redirectMatch = data.match(/window\.location\s*=\s*['"]([^'"]+)['"]/);
           if (redirectMatch) {
@@ -370,7 +370,7 @@ export class LegrandAuth {
               return;
             }
           }
-          
+
           // Check if there's an error
           if (data.includes('error')) {
             reject(new Error(`Confirmation failed: ${data.substring(0, 200)}`));
@@ -407,7 +407,7 @@ export class LegrandAuth {
   private async postToTokenEndpoint(body: string): Promise<TokenResponse> {
     return new Promise((resolve, reject) => {
       const urlObj = new URL(AUTH_CONFIG.tokenUrl);
-      
+
       const req = https.request({
         hostname: urlObj.hostname,
         path: urlObj.pathname,

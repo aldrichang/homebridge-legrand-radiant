@@ -20,14 +20,14 @@
     "wifi",
     "homekit"
   ],
-  "author": "wonderboy",
+  "author": "aldrichang",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/homebridge-legrand-radiant.git"
+    "url": "git+https://github.com/aldrichang/homebridge-legrand-radiant.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/homebridge-legrand-radiant/issues"
+    "url": "https://github.com/aldrichang/homebridge-legrand-radiant/issues"
   },
   "engines": {
     "node": ">=18.0.0",
@@ -43,5 +43,5 @@
     "rimraf": "^5.0.0",
     "typescript": "^5.3.0"
   },
-  "homepage": "https://github.com/yourusername/homebridge-legrand-radiant#readme"
+  "homepage": "https://github.com/aldrichang/homebridge-legrand-radiant#readme"
 }

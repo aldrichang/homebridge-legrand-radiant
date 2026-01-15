@@ -10,7 +10,7 @@ jobs:
 
     permissions:
       contents: write
-      id-token: write
+      id-token: write  # Required for npm provenance and trusted publishing
 
     steps:
       - name: Checkout code
@@ -44,10 +44,8 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Publish to NPM
+      - name: Publish to NPM (using Trusted Publishing)
         run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create Git tag (if not exists)
         run: |

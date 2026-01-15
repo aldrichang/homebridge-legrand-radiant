@@ -41,10 +41,10 @@ export class LegrandCloudAccessory {
       if (existingSwitch) {
         this.accessory.removeService(existingSwitch);
       }
-      
+
       // Get or create lightbulb service
       this.service = existingLightbulb || this.accessory.addService(this.platform.Service.Lightbulb, deviceName);
-      
+
       // Set up brightness characteristic
       this.service.getCharacteristic(this.platform.Characteristic.Brightness)
         .onSet(this.setBrightness.bind(this))
@@ -54,7 +54,7 @@ export class LegrandCloudAccessory {
       if (existingLightbulb) {
         this.accessory.removeService(existingLightbulb);
       }
-      
+
       // Get or create switch service
       this.service = existingSwitch || this.accessory.addService(this.platform.Service.Switch, deviceName);
     }
@@ -73,14 +73,14 @@ export class LegrandCloudAccessory {
    */
   private async setOn(value: CharacteristicValue): Promise<void> {
     const isOn = value as boolean;
-    
+
     this.platform.log.debug(`Setting ${this.deviceName} to ${isOn ? 'ON' : 'OFF'}`);
-    
+
     try {
-      const success = isOn 
+      const success = isOn
         ? await this.platform.cloudApi.turnOn(this.deviceId)
         : await this.platform.cloudApi.turnOff(this.deviceId);
-      
+
       if (success) {
         this.state.on = isOn;
         this.platform.log.info(`${this.deviceName} is now ${isOn ? 'ON' : 'OFF'}`);
@@ -105,12 +105,12 @@ export class LegrandCloudAccessory {
    */
   private async setBrightness(value: CharacteristicValue): Promise<void> {
     const brightness = value as number;
-    
+
     this.platform.log.debug(`Setting ${this.deviceName} brightness to ${brightness}%`);
-    
+
     try {
       const success = await this.platform.cloudApi.setBrightness(this.deviceId, brightness);
-      
+
       if (success) {
         this.state.brightness = brightness;
         this.state.on = brightness > 0;
