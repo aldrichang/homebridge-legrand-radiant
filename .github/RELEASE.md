@@ -59,6 +59,11 @@ After the initial publish, all future releases will be automated through GitHub 
 - ✅ **Automatic provenance** - Cryptographically links packages to source code
 - ✅ **Simpler setup** - No secrets to rotate or manage
 
+### Technical Requirements
+
+- **Node.js 24+** is required for npm Trusted Publishers OIDC authentication
+- The workflow automatically uses Node.js 24.x
+
 ## How to Release
 
 ### Option 1: Using GitHub UI (Recommended)
