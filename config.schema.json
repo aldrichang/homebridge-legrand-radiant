@@ -1,0 +1,127 @@
+{
+  "pluginAlias": "LegrandRadiant",
+  "pluginType": "platform",
+  "singular": true,
+  "headerDisplay": "Control your Legrand Radiant WiFi smart switches and dimmers through HomeKit. Enter your Legrand Smart Lights app credentials below.",
+  "footerDisplay": "Devices are automatically discovered from your Legrand account. For issues, check the [GitHub repository](https://github.com/yourusername/homebridge-legrand-radiant).",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "title": "Platform Name",
+        "type": "string",
+        "default": "Legrand",
+        "required": true,
+        "description": "Name shown in Homebridge logs"
+      },
+      "email": {
+        "title": "Email",
+        "type": "string",
+        "format": "email",
+        "required": true,
+        "description": "Your Legrand Smart Lights account email"
+      },
+      "password": {
+        "title": "Password",
+        "type": "string",
+        "required": true,
+        "description": "Your Legrand Smart Lights account password"
+      },
+      "pollingInterval": {
+        "title": "Polling Interval (seconds)",
+        "type": "integer",
+        "default": 30,
+        "minimum": 10,
+        "maximum": 300,
+        "description": "How often to check for state changes (10-300 seconds)"
+      },
+      "debug": {
+        "title": "Debug Mode",
+        "type": "boolean",
+        "default": false,
+        "description": "Enable verbose logging for troubleshooting"
+      },
+      "accessToken": {
+        "title": "Manual Access Token",
+        "type": "string",
+        "description": "Optional: Only use if automatic login fails"
+      },
+      "devices": {
+        "title": "Manual Device List",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "title": "Device ID",
+              "type": "string",
+              "required": true
+            },
+            "name": {
+              "title": "Device Name",
+              "type": "string",
+              "required": true
+            },
+            "type": {
+              "title": "Device Type",
+              "type": "string",
+              "oneOf": [
+                { "title": "Switch", "enum": ["switch"] },
+                { "title": "Dimmer", "enum": ["dimmer"] }
+              ],
+              "default": "switch"
+            }
+          }
+        },
+        "description": "Optional: Only needed if auto-discovery doesn't work"
+      }
+    },
+    "required": ["name", "email", "password"]
+  },
+  "layout": [
+    {
+      "type": "fieldset",
+      "title": "Legrand Account",
+      "expandable": false,
+      "items": [
+        "email",
+        {
+          "key": "password",
+          "type": "password"
+        }
+      ]
+    },
+    {
+      "type": "fieldset",
+      "title": "Settings",
+      "expandable": true,
+      "expanded": false,
+      "items": [
+        "name",
+        "pollingInterval",
+        "debug"
+      ]
+    },
+    {
+      "type": "fieldset",
+      "title": "Advanced",
+      "expandable": true,
+      "expanded": false,
+      "items": [
+        "accessToken",
+        {
+          "key": "devices",
+          "type": "array",
+          "title": "Manual Devices",
+          "expandable": true,
+          "expanded": false,
+          "items": [
+            "devices[].id",
+            "devices[].name",
+            "devices[].type"
+          ]
+        }
+      ]
+    }
+  ]
+}
