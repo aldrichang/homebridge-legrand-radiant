@@ -3,7 +3,7 @@
   "pluginType": "platform",
   "singular": true,
   "headerDisplay": "Control your Legrand Radiant WiFi smart switches and dimmers through HomeKit. Enter your Legrand Smart Lights app credentials below.",
-  "footerDisplay": "Devices are automatically discovered from your Legrand account. For issues, check the [GitHub repository](https://github.com/yourusername/homebridge-legrand-radiant).",
+  "footerDisplay": "Devices are automatically discovered from your Legrand account. For issues, check the [GitHub repository](https://github.com/aldrichang/homebridge-legrand-radiant).",
   "schema": {
     "type": "object",
     "properties": {
@@ -11,20 +11,17 @@
         "title": "Platform Name",
         "type": "string",
         "default": "Legrand",
-        "required": true,
         "description": "Name shown in Homebridge logs"
       },
       "email": {
         "title": "Email",
         "type": "string",
         "format": "email",
-        "required": true,
         "description": "Your Legrand Smart Lights account email"
       },
       "password": {
         "title": "Password",
         "type": "string",
-        "required": true,
         "description": "Your Legrand Smart Lights account password"
       },
       "pollingInterval": {
@@ -54,13 +51,11 @@
           "properties": {
             "id": {
               "title": "Device ID",
-              "type": "string",
-              "required": true
+              "type": "string"
             },
             "name": {
               "title": "Device Name",
-              "type": "string",
-              "required": true
+              "type": "string"
             },
             "type": {
               "title": "Device Type",
@@ -71,7 +66,8 @@
               ],
               "default": "switch"
             }
-          }
+          },
+          "required": ["id", "name"]
         },
         "description": "Optional: Only needed if auto-discovery doesn't work"
       }
