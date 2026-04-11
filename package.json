@@ -1,7 +1,7 @@
 {
   "name": "homebridge-legrand-radiant",
   "displayName": "Legrand Radiant",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Homebridge plugin for Legrand Radiant WiFi smart switches and dimmers",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -21,6 +21,10 @@
     "homekit"
   ],
   "author": "aldrichang",
+  "funding": {
+    "type" : "paypal",
+    "url" : "https://paypal.me/aldrichang"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",

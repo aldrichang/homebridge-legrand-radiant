@@ -1,5 +1,6 @@
 # Homebridge Legrand Radiant
 
+[![verified-by-homebridge](https://img.shields.io/badge/homebridge-verified-blueviolet?color=%23491F59&style=flat)](https://github.com/homebridge/homebridge/wiki/Verified-Plugins)
 [![npm](https://img.shields.io/npm/v/homebridge-legrand-radiant.svg)](https://www.npmjs.com/package/homebridge-legrand-radiant)
 [![License](https://img.shields.io/npm/l/homebridge-legrand-radiant.svg)](https://github.com/yourusername/homebridge-legrand-radiant/blob/main/LICENSE)
 
